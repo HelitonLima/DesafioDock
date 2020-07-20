@@ -84,7 +84,25 @@ router.patch('/bloquearConta', (req, res, next) => {
                 if(error) { return res.status(500).send({ error: error})}
 
                 res.status(202).send({
-                    mensagem: 'Conta Bloqueada com sucesso!'
+                    mensagem: 'Conta bloqueada com sucesso!'
+                });
+            }
+        );
+    });
+});
+
+router.patch('/desbloquearConta', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if(error) { return res.status(500).send({ error: error})}
+        conn.query(
+            'UPDATE conta SET flagAtivo = 1 WHERE idConta = ?',
+            [req.body.idConta],
+            (error, resultado, field) => {
+                conn.release();
+                if(error) { return res.status(500).send({ error: error})}
+
+                res.status(202).send({
+                    mensagem: 'Conta desbloqueada com sucesso!'
                 });
             }
         );
