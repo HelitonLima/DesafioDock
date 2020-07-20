@@ -13,7 +13,7 @@ router.get('/consultarContas', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'SELECT * FROM conta',
+            'SELECT * FROM vwConta',
             (error, result, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
                 const response = {
@@ -71,7 +71,7 @@ router.get('/consultarConta/:idConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'SELECT * FROM conta WHERE idConta = ?;',
+            'SELECT * FROM vwConta WHERE idConta = ?;',
             [req.params.idConta],
             (error, result, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
