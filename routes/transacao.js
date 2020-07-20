@@ -13,9 +13,9 @@ router.get('/consultarTransacoes', (req, res, next) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
             'SELECT * FROM transacao',
-            (error, resultado, field) => {
+            (error, result, field) => {
                 if(error) { return res.status(500).send({ error: error})}
-                return res.status(200).send({response: resultado})
+                return res.status(200).send({response: result})
             }
         )
     });
@@ -27,9 +27,9 @@ router.get('/consultarTransacao:idConta', (req, res, next) => {
         conn.query(
             'SELECT * FROM transacao WHERE idConta = ?',
             [req.params.idConta],
-            (error, resultado, field) => {
+            (error, result, field) => {
                 if(error) { return res.status(500).send({ error: error})}
-                return res.status(200).send({response: resultado})
+                return res.status(200).send({response: result})
             }
         )
     });

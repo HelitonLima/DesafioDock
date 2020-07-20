@@ -82,12 +82,12 @@ router.get('/consultarConta/:idConta', (req, res, next) => {
                 }
                 const response = {
                     conta: {
-                        idConta: result.length,
-                        nome: req.body.nome,
-                        cpf: req.body.cpf,
-                        saldo: req.body.saldo,
-                        flagAtivo: req.body.flagAtivo,
-                        dataCriacao:req.body.dataCriacao,
+                        idConta: result[0].idConta,
+                        nome: result[0].nome,
+                        cpf: result[0].cpf,
+                        saldo: result[0].saldo,
+                        flagAtivo: result[0].flagAtivo,
+                        dataCriacao:result[0].dataCriacao,
                         request: {
                             tipo: 'GET',
                             descricao: 'Exibir todas contas criadas',
