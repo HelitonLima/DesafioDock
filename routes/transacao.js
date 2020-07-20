@@ -8,9 +8,30 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    res.status(200).send({
-        mensagem: 'Transações'
+router.get('/consultarTransacoes', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if(error) { return res.status(500).send({ error: error})}
+        conn.query(
+            'SELECT * FROM transacao',
+            (error, resultado, field) => {
+                if(error) { return res.status(500).send({ error: error})}
+                return res.status(200).send({response: resultado})
+            }
+        )
+    });
+});
+
+router.get('/consultarTransacao:idConta', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if(error) { return res.status(500).send({ error: error})}
+        conn.query(
+            'SELECT * FROM transacao WHERE idConta = ?',
+            [req.params.idConta],
+            (error, resultado, field) => {
+                if(error) { return res.status(500).send({ error: error})}
+                return res.status(200).send({response: resultado})
+            }
+        )
     });
 });
 

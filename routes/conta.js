@@ -14,11 +14,25 @@ router.get('/consultarContas', (req, res, next) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
             'SELECT * FROM conta',
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
-                return res.status(200).send({response: resultado})
+                const response = {
+                    quantidade: result.length,
+                    contas: result.map(conta => {
+                        return {
+                            idConta: conta.idConta,
+                            nome: conta.nome,
+                            request: {
+                                tipo: 'GET',
+                                descricao: 'Exibir todos detalhes dessa conta',
+                                url: 'http://localhost:3000/conta/consultarConta/' + conta.idConta
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send({response})
             }
-        )
+        );
     });
 });
 
@@ -26,32 +40,64 @@ router.post('/criarConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, ?, ?, ?)',
-            [req.body.nome, req.body.cpf, req.body.saldo, req.body.flagAtivo, req.body.dataCriacao],
-            (error, resultado, field) => {
+            'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, 0, 1, ?)',
+            [req.body.nome, req.body.cpf, req.body.dataCriacao],
+            (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-
-                res.status(201).send({
-                    mensagem: 'Conta criada com sucesso!',   
-                    idConta: resultado.insertId
-                })
+                const response = {
+                    mensagem: 'Conta criada com sucesso!',
+                    contaCriada: {
+                        idConta: result.idConta,
+                        nome: req.body.nome,
+                        cpf: req.body.cpf,
+                        saldo: 0,
+                        flagAtivo: 1,
+                        dataCriacao: req.body.dataCriacao,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Exibir todas contas criadas',
+                            url: 'http://localhost:3000/conta/consultarContas'
+                        }
+                    }
+                }
+                return res.status(201).send({response});
             }
-        )
-    })
+        );
+    });
 });
 
-router.get('/consultarConta:idConta', (req, res, next) => {
+router.get('/consultarConta/:idConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'SELECT * FROM conta WHERE idConta = ?',
+            'SELECT * FROM conta WHERE idConta = ?;',
             [req.params.idConta],
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
-                return res.status(200).send({response: resultado})
+                if(result.length == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
+                const response = {
+                    conta: {
+                        idConta: result.length,
+                        nome: req.body.nome,
+                        cpf: req.body.cpf,
+                        saldo: req.body.saldo,
+                        flagAtivo: req.body.flagAtivo,
+                        dataCriacao:req.body.dataCriacao,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Exibir todas contas criadas',
+                            url: 'http://localhost:3000/conta/consultarContas'
+                        }
+                    }
+                }
+                return res.status(200).send({response})
             }
-        )
+        );
     });
 });
 
@@ -61,13 +107,22 @@ router.patch('/alterarDados', (req, res, next) => {
         conn.query(
             'UPDATE conta SET nome = ?, cpf = ? WHERE idConta = ?',
             [req.body.nome, req.body.cpf, req.body.idConta],
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-
-                res.status(202).send({
-                    mensagem: 'Nome e CPF alterados com sucesso!'
-                });
+                const response = {
+                    mensagem: 'Nome e CPF alterados com sucesso!',
+                    dadosAlterados:{
+                        nome: req.body.nome,
+                        cpf: req.body.cpf,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Exibir todos detalhes dessa conta',
+                            url: 'http://localhost:3000/conta/consultarConta/' + req.body.idConta
+                        }
+                    }
+                }
+                res.status(202).send({response});
             }
         );
     });
@@ -79,13 +134,18 @@ router.patch('/bloquearConta', (req, res, next) => {
         conn.query(
             'UPDATE conta SET flagAtivo = 0 WHERE idConta = ?',
             [req.body.idConta],
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-
-                res.status(202).send({
-                    mensagem: 'Conta bloqueada com sucesso!'
-                });
+                const response = {
+                    mensagem: 'Conta bloqueada com sucesso!',
+                    request: {
+                        tipo: 'GET',
+                        descricao: 'Exibir todos detalhes dessa conta',
+                        url: 'http://localhost:3000/conta/consultarConta/' + req.body.idConta
+                    }
+                }
+                res.status(202).send({response});
             }
         );
     });
@@ -97,13 +157,18 @@ router.patch('/desbloquearConta', (req, res, next) => {
         conn.query(
             'UPDATE conta SET flagAtivo = 1 WHERE idConta = ?',
             [req.body.idConta],
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-
-                res.status(202).send({
-                    mensagem: 'Conta desbloqueada com sucesso!'
-                });
+                const response = {
+                    mensagem: 'Conta desbloqueada com sucesso!',
+                    request: {
+                        tipo: 'GET',
+                        descricao: 'Exibir todos detalhes dessa conta',
+                        url: 'http://localhost:3000/conta/consultarConta/' + req.body.idConta
+                    }
+                }
+                res.status(202).send({response});
             }
         );
     });
@@ -115,13 +180,18 @@ router.delete('/excluirConta', (req, res, next) => {
         conn.query(
             'DELETE FROM conta WHERE idConta = ?',
             [req.body.idConta],
-            (error, resultado, field) => {
+            (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-
-                res.status(202).send({
-                    mensagem: 'Sua conta foi excluída com sucesso!'
-                });
+                const response = {
+                    mensagem: 'Conta excluída com sucesso!',
+                    request: {
+                        tipo: 'GET',
+                        descricao: 'Exibir todas contas criadas',
+                        url: 'http://localhost:3000/conta/consultarContas'
+                    }
+                }
+                res.status(202).send({response});
             }
         );
     });
