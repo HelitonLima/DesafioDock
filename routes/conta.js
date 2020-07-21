@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql').pool;
+now = new Date;
 
 router.get('/consultarContas', (req, res, next) => {
     mysql.getConnection((error, conn) => {
@@ -40,8 +41,8 @@ router.post('/criarConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, 0, 1, ?)',
-            [req.body.nome, req.body.cpf, req.body.dataCriacao],
+            'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, 0, 1, CURDATE())',
+            [req.body.nome, req.body.cpf],
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
@@ -53,7 +54,7 @@ router.post('/criarConta', (req, res, next) => {
                         cpf: req.body.cpf,
                         saldo: 0,
                         flagAtivo: 1,
-                        dataCriacao: req.body.dataCriacao,
+                        dataCriacao: now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear(),
                         request: {
                             tipo: 'GET',
                             descricao: 'Exibir todas contas criadas',

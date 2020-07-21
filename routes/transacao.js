@@ -32,7 +32,7 @@ router.get('/consultarTransacoes', (req, res, next) => {
                         }
                     })
                 }
-                return res.status(200).send({response})
+                return res.status(200).send({response});
             }
         )
     });
@@ -74,8 +74,8 @@ router.patch('/depositar', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            `UPDATE conta SET saldo = saldo + ` + req.body.valor + ` WHERE idConta = ?;`,
-            [req.body.idConta],
+            `UPDATE conta SET saldo = saldo + ? WHERE idConta = ?;`,
+            [req.body.valor, req.body.idConta],
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
@@ -94,14 +94,9 @@ router.patch('/depositar', (req, res, next) => {
             }
         );
         conn.query(
-            'INSERT INTO transacao (idConta, descricao, valor, dataTransacao) VALUES (?,?,?,?)',
-            [req.body.idConta, req.body.descricao, req.body.valor, req.body.dataTransacao],
-            (error, result, fields) => {
-                conn.release();
-                if(error) { return res.status(500).send({ error: error})}
-                return res.status(202).send({});
-            }
-        )
+            'INSERT INTO transacao (idConta, descricao, valor, dataTransacao) VALUES (?,?,?,CURDATE())',
+            [req.body.idConta, req.body.descricao, req.body.valor]
+        );
     });
 });
 
@@ -109,8 +104,8 @@ router.patch('/sacar', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            `UPDATE conta SET saldo = saldo - ` + req.body.valor + ` WHERE idConta = ?;`,
-            [req.body.idConta],
+            'UPDATE conta SET saldo = saldo - ? WHERE idConta = ?;',
+            [req.body.valor, req.body.idConta],
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
@@ -129,14 +124,39 @@ router.patch('/sacar', (req, res, next) => {
             }
         );
         conn.query(
-            'INSERT INTO transacao (idConta, descricao, valor, dataTransacao) VALUES (?,?,?,?)',
-            [req.body.idConta, req.body.descricao, req.body.valor, req.body.dataTransacao],
-            (error, result, fields) => {
-                conn.release();
-                if(error) { return res.status(500).send({ error: error})}
-                return res.status(202).send({});
-            }
+            'INSERT INTO transacao (idConta, descricao, valor, dataTransacao) VALUES (?,?,?,CURDATE())',
+            [req.body.idConta, req.body.descricao, req.body.valor]
         )
+    });
+});
+
+router.get('/extratoPeriodo', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if(error) { return res.status(500).send({ error: error})}
+        conn.query(
+            'SELECT * FROM vwTransacao WHERE dataTransacao >= ? AND dataTransacao <= ?',
+            [req.body.dataInicio, req.body.dataFim],
+            (error, result, field) => {
+                if(error) { return res.status(500).send({ error: error})}
+                const response = {
+                    quantidade: result.length,
+                    transacoes: result.map(transacao => {
+                        return {
+                            idConta: transacao.idConta,
+                            descricao: transacao.descricao,
+                            valor: transacao.valor,
+                            dataTransacao: transacao.dataTransacao,
+                            request: {
+                                tipo: 'GET',
+                                descricao: 'Exibir todos detalhes da conta dessa transação',
+                                url: 'http://localhost:3000/conta/consultarConta/' + transacao.idConta
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send({response});
+            }
+        );
     });
 });
 
