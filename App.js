@@ -1,5 +1,5 @@
 /*
-    File: App.js
+    File: app.js
     Author: Heliton Lima
     Date: 17/07
     Description: Exportação da aplicação
@@ -14,8 +14,8 @@ const rotaConta = require('./routes/conta');
 const rotaTransacao = require('./routes/transacao');
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/conta', rotaConta);
 app.use('/transacao', rotaTransacao);

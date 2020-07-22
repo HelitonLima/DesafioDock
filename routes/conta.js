@@ -40,6 +40,7 @@ router.get('/consultarContas', (req, res, next) => {
 router.post('/criarConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
+        console.log(req.body);
         conn.query(
             'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, 0, 1, CURDATE())',
             [req.body.nome, req.body.cpf],
