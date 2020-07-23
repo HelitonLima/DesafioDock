@@ -20,7 +20,7 @@ router.get('/consultarTransacoes', (req, res, next) => {
                     quantidade: result.length,
                     transacoes: result.map(transacao => {
                         return {
-                            idConta: transacao.idConta,
+                            
                             descricao: transacao.descricao,
                             valor: transacao.valor,
                             dataTransacao: transacao.dataTransacao,
@@ -52,16 +52,19 @@ router.get('/consultarTransacao/:idConta', (req, res, next) => {
                     })
                 }
                 const response = {
-                    transacoes: {
-                        descricao: result[0].descricao,
-                        valor: result[0].valor,
-                        dataTransacao: result[0].datadataTransacao,
-                        request: {
-                            tipo: 'GET',
-                            descricao: 'Exibir todas transações realizadas',
-                            url: 'http://localhost:3000/transacao/consultarTransacoes'
+                    transacoes: result.map(transacao => {
+                        return  {
+                            idConta: transacao.idConta,
+                            descricao: transacao.descricao,
+                            valor: transacao.valor,
+                            dataTransacao: transacao.dataTransacao,
+                            request: {
+                                tipo: 'GET',
+                                descricao: 'Exibir todas transações realizadas',
+                                url: 'http://localhost:3000/transacao/consultarTransacoes'
+                            }
                         }
-                    }
+                    })
                 }
                 return res.status(200).send({response})
             }

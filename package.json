@@ -4,7 +4,7 @@
   "description": "REST API para desafio Dock",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest ",
+    "test": "cross-env NODE_ENV=test jest",
     "start": "nodemon src/server.js --ignore __tests__"
   },
   "keywords": [

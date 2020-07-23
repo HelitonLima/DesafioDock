@@ -8,10 +8,13 @@ const conta = {
     "cpf": "12345678910"
 }
 
- describe('Operações de constas', () => {
+describe('Operações de constas', () => {
+    beforeAll(async () => {
+        await truncate();
+    });
     afterAll(async () => {
         await truncate();
-      });
+    });
 
     it('deve retornar status 201 quando criar uma conta', async () => {
         const response = await request(app)
@@ -26,37 +29,43 @@ const conta = {
         expect(response.status).toBe(200);
     });
 
-    it('deve retornar status 200 quando consultar uma conta', async () => {
+     it('deve retornar status 200 quando consultar uma conta', async () => {
         const response = await request(app)
             .get('/conta/consultarConta/1')
         expect(response.status).toBe(200);
+    }); 
+
+    it('deve retornar status 404 quando consultar uma conta não existente', async () => {
+        const response = await request(app)
+            .get('/conta/consultarConta/9999')
+        expect(response.status).toBe(404);
     });
 
-    it('deve retornar status 202 quando alterar dados de uma conta', async () => {
+     it('deve retornar status 202 quando alterar dados de uma conta', async () => {
         const response = await request(app)
             .patch('/conta/alterarDados')
             .send(conta)
         expect(response.status).toBe(202);
-    });
+    }); 
 
-    it('deve retornar status 202 quando consultar uma conta', async () => {
+     it('deve retornar status 202 quando bloquear uma conta', async () => {
         const response = await request(app)
             .patch('/conta/bloquearConta')
             .send(conta)
         expect(response.status).toBe(202);
-    });
+    }); 
 
-    it('deve retornar status 202 quando consultar uma conta', async () => {
+     it('deve retornar status 202 quando desloquear uma conta', async () => {
         const response = await request(app)
             .patch('/conta/desbloquearConta')
             .send(conta)
         expect(response.status).toBe(202);
-    });
+    }); 
 
-    it('deve retornar status 202 quando deletar uma conta', async () => {
+     it('deve retornar status 202 quando deletar uma conta', async () => {
         const response = await request(app)
             .delete('/conta/excluirConta')
             .send(conta)
         expect(response.status).toBe(202);
-    });
+    }); 
 }); 

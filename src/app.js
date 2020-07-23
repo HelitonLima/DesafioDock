@@ -10,8 +10,8 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const rotaConta = require('./src/routes/conta');
-const rotaTransacao = require('./src/routes/transacao');
+const rotaConta = require('./routes/conta');
+const rotaTransacao = require('./routes/transacao');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
