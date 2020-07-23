@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
-const mysql = require('../mysql').pool;
+const mysql = require('../../src/mysql').pool;
 now = new Date;
 
 router.get('/consultarContas', (req, res, next) => {
@@ -40,7 +40,6 @@ router.get('/consultarContas', (req, res, next) => {
 router.post('/criarConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
-        console.log(req.body);
         conn.query(
             'INSERT INTO conta (nome, cpf, saldo, flagAtivo, dataCriacao) VALUES (?, ?, 0, 1, CURDATE())',
             [req.body.nome, req.body.cpf],
@@ -50,7 +49,6 @@ router.post('/criarConta', (req, res, next) => {
                 const response = {
                     mensagem: 'Conta criada com sucesso!',
                     contaCriada: {
-                        idConta: result.idConta,
                         nome: req.body.nome,
                         cpf: req.body.cpf,
                         saldo: 0,
@@ -112,6 +110,11 @@ router.patch('/alterarDados', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Nome e CPF alterados com sucesso!',
                     dadosAlterados:{
@@ -139,6 +142,11 @@ router.patch('/bloquearConta', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Conta bloqueada com sucesso!',
                     request: {
@@ -162,6 +170,11 @@ router.patch('/desbloquearConta', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Conta desbloqueada com sucesso!',
                     request: {
@@ -185,6 +198,11 @@ router.delete('/excluirConta', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Conta excluída com sucesso!',
                     request: {
@@ -197,6 +215,6 @@ router.delete('/excluirConta', (req, res, next) => {
             }
         );
     });
-})
+});
 
 module.exports = router;

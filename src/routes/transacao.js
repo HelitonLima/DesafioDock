@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
-const mysql = require('../mysql').pool;
+const mysql = require('../../src/mysql').pool;
 
 router.get('/consultarTransacoes', (req, res, next) => {
     mysql.getConnection((error, conn) => {
@@ -42,10 +42,9 @@ router.get('/consultarTransacao/:idConta', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
-            'SELECT * FROM vwTransacao WHERE idConta = ?',
+            'SELECT * FROM vwTransacao WHERE idConta = ?;',
             [req.params.idConta],
             (error, result, field) => {
-                conn.release();
                 if(error) { return res.status(500).send({ error: error})}
                 if(result.length == 0){
                     return res.status(404).send({
@@ -64,7 +63,7 @@ router.get('/consultarTransacao/:idConta', (req, res, next) => {
                         }
                     }
                 }
-                return res.status(200).send({response: result})
+                return res.status(200).send({response})
             }
         )
     });
@@ -79,6 +78,11 @@ router.patch('/depositar', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Depósito feito com sucesso!',
                     deposito:{
@@ -109,6 +113,11 @@ router.patch('/sacar', (req, res, next) => {
             (error, result, fields) => {
                 conn.release();
                 if(error) { return res.status(500).send({ error: error})}
+                if(result.affectedRows == 0){
+                    return res.status(404).send({
+                        mensagem: 'Esta conta não existe'
+                    })
+                }
                 const response = {
                     mensagem: 'Saque realizado com sucesso!',
                     deposito:{

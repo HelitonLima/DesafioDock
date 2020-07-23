@@ -1,111 +1,62 @@
-const app = require('../app');
+const app = require('../src/app');
 const request = require('supertest');
+const truncate = require('../src/truncate');
 
 const conta = {
-    "idConta": 3,
+    "idConta": 1,
     "nome": "Heliton",
     "cpf": "12345678910"
 }
 
-describe('criação de conta', () => {
+ describe('Operações de constas', () => {
+    afterAll(async () => {
+        await truncate();
+      });
+
     it('deve retornar status 201 quando criar uma conta', async () => {
-        request(app)
+        const response = await request(app)
             .post('/conta/criarConta')
             .send(conta)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(201);
+    });
 
-describe('consulta de contas', () => {
     it('deve retornar status 200 quando consultar contas', async () => {
-        request(app)
+        const response = await request(app)
             .get('/conta/consultarContas')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(200);
+    });
 
-describe('consulta de uma conta', () => {
     it('deve retornar status 200 quando consultar uma conta', async () => {
-        request(app)
+        const response = await request(app)
             .get('/conta/consultarConta/1')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(200);
+    });
 
-describe('alterar dados de uma conta', () => {
-    it('deve retornar status 202 quando consultar uma conta', async () => {
-        request(app)
+    it('deve retornar status 202 quando alterar dados de uma conta', async () => {
+        const response = await request(app)
             .patch('/conta/alterarDados')
             .send(conta)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(202)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(202);
+    });
 
-describe('bloquear uma conta', () => {
     it('deve retornar status 202 quando consultar uma conta', async () => {
-        request(app)
+        const response = await request(app)
             .patch('/conta/bloquearConta')
             .send(conta)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(202)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(202);
+    });
 
-describe('desbloquear uma conta', () => {
     it('deve retornar status 202 quando consultar uma conta', async () => {
-        request(app)
+        const response = await request(app)
             .patch('/conta/desbloquearConta')
             .send(conta)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(202)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(202);
+    });
 
-describe('deletar uma conta', () => {
-    it('deve retornar status 2 quando deletar uma conta', async () => {
-        request(app)
+    it('deve retornar status 202 quando deletar uma conta', async () => {
+        const response = await request(app)
             .delete('/conta/excluirConta')
             .send(conta)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(202)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            });
-    })
-});
+        expect(response.status).toBe(202);
+    });
+}); 

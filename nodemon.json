@@ -1,4 +1,4 @@
-{
+ {
 
     "env" : {
         "MYSQL_USER": "root",
@@ -8,4 +8,4 @@
         "MYSQL_PORT": 3306
     }
 
-}
+} 
