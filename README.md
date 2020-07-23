@@ -4,8 +4,7 @@ Aplicação API REST em Node JS com conexão ao banco de dados MySQL para realiz
 
 ## Começando
 
-A aplicação foi feita com duas tabelas, conta e transação. Para realizar um depósito ou saque é necessário que exista pelo menos uma conta para passar seu id na transferência,
-o mesmo vale para consulta, alteração, bloqueio, desbloqueio, exclusão de dados ou consulta de transações, por período ou não, de uma determinada conta.
+A aplicação foi feita com duas tabelas, conta e transação. Para realizar um depósito ou saque é necessário que exista pelo menos uma conta para passar seu id na transferência, o mesmo vale para consulta, alteração, bloqueio, desbloqueio, exclusão de dados ou consulta de transações, por período ou não, de uma determinada conta.
 
 Como foi utilizado um banco de dados para criação da aplicação, é necessário que seja alterado os dados do arquivo .env para que sejam feitos os testes. 
 
@@ -177,3 +176,6 @@ E passe o id da conta que irá excluir, exemplo:
 
 ### Excluir uma conta
 ![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/excluirConta.PNG)
+
+### Nota
+Nunca tinha feito testes em Jest, decidi tentar aplicar no projeto do desafio, porém, alguns testes retornavam erro de conexão com o banco de dados mesmo eu fazendo as operações pelo postman e não retornando nenhum erro.
