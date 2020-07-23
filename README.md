@@ -139,3 +139,41 @@ E passe o id da conta que irá excluir, exemplo:
   "idConta": 1
 }
 ```
+
+## Testando no Postman
+
+### Criando uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/criarConta.PNG)
+
+### Consultando todas as contas
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/consultarContas.PNG)
+
+### Consultando uma conta específica
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/consultarConta.PNG)
+
+### Alterar dados de uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/alterarDados.PNG)
+
+### Bloquear uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/bloquearConta.PNG)
+
+### Desbloquear uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/desbloquearConta.PNG)
+
+### Depositar
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/depositar.PNG)
+
+### Sacar
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/sacar.PNG)
+
+### Consultar transações de todas contas
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/consultarTransacoes.PNG)
+
+### Consultar transações de uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/consultarTransacao.PNG)
+
+### Extrato por período
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/extratoPeriodo.PNG)
+
+### Excluir uma conta
+![](https://github.com/HelitonLima/DesafioDock/blob/master/prints/excluirConta.PNG)
